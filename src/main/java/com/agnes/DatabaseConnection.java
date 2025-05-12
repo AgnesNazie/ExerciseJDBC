@@ -5,12 +5,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
 public class DatabaseConnection {
     public static void main(String[] args) {
-        exe1();
+        exe2();
     }
-    public static void exe(){
+
+    public static void exe() {
         //create a database connection with your sql name
         String url = "jdbc:mysql://localhost:3306/my_database";
         //create your database username
@@ -52,7 +54,8 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
     }
-    public static  void exe1() {
+
+    public static void exe1() {
         /* Exercise 1: Insert One Student Using Scanner
 Create a Java program that:
 
@@ -65,13 +68,6 @@ A student's name.
 A student's age.
 
 Inserts the data into the students table.
-
-🧪 Exercise 2: Insert Three Students in a Row
-Update Exercise 1 so it:
-
-Repeats the input and insertion process 3 times.
-
-Stores 3 students in the table (ask the user each time).
          */
         //create a database connection with your sql name
         String url = "jdbc:mysql://localhost:3306/my_database";
@@ -109,10 +105,64 @@ Stores 3 students in the table (ask the user each time).
             // close everything
             connection.close();
             statement.close();
-        } catch (SQLException e ) {
+        } catch (SQLException e) {
             System.out.println("Error, something went wrong");
             e.printStackTrace();
 
+        } finally {
+            scanner.close();
+        }
+    }
+
+    public static void exe2() {
+        /*Exercise 2: Insert Three Students in a Row
+Update Exercise 1 so it:
+
+Repeats the input and insertion process 3 times.
+
+Stores 3 students in the table (ask the user each time).
+         */
+
+        //create a database connection with your sql name
+        String url = "jdbc:mysql://localhost:3306/my_database";
+        //create your database username
+        String user = "root";
+        //create your password
+        String password = "75240644.Pa@";
+
+        //cal scanner
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Connected");
+
+            //get user input
+            Statement statement = null;
+            for (int i = 1; i <= 3; i++) {
+                System.out.println("Enter student name " + i + ":");
+                String name = scanner.nextLine();
+
+                System.out.println("Enter student age " + i + ":");
+                int age = scanner.nextInt();
+
+                scanner.nextLine();
+
+                //build sql query
+                String sql = "INSERT INTO students (name, age) VALUES ('" + name + "', " + age + ")";
+                //execute query
+                statement = connection.createStatement();
+                int rows = statement.executeUpdate(sql);
+                if (rows > 0) {
+                    System.out.println("Student added successfully");
+                }
+
+            }
+            // close everything
+            connection.close();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("error occured");
         } finally {
             scanner.close();
         }

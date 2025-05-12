@@ -1,15 +1,13 @@
 package com.agnes;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
+import java.sql.*;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 public class DatabaseConnection {
     public static void main(String[] args) {
-        exe2();
+        exe3();
     }
 
     public static void exe() {
@@ -167,7 +165,48 @@ Stores 3 students in the table (ask the user each time).
             scanner.close();
         }
     }
+
+    public static void exe3() {
+        //create a database connection with your sql name
+        String url = "jdbc:mysql://localhost:3306/my_database";
+        //create your database username
+        String user = "root";
+        //create your password
+        String password = "75240644.Pa@";
+
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            System.out.println("connected successfully");
+
+            //create statement
+            Statement statement = connection.createStatement();
+
+            //execute statement
+            String selectQuery = "SELECT * FROM students";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+
+            //loop through rows
+            System.out.println("Student List");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int age = resultSet.getInt("age");
+
+                System.out.println("ID: " + id + ", Name: " + name + ", Age: " + age);
+            }
+
+
+            //close everything
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("error occurred");
+        }
+    }
 }
+
+
 
 
 
